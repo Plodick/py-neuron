@@ -2,7 +2,7 @@ import numpy as np
 
 T = 1
 
-standart_images_matrix = np.array([[-1, -1, -1],
+standard_images_matrix = np.array([[-1, -1, -1],
                                    [-1, -1, 1],
                                    [-1, 1, -1],
                                    [-1, 1, 1],
@@ -29,7 +29,7 @@ class HammingNeuron:
 
 
 def main():
-    neuron = HammingNeuron(standart_images_matrix)
+    neuron = HammingNeuron(standard_images_matrix)
     print()
 
 
