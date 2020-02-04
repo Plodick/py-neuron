@@ -1,17 +1,19 @@
+import os
 from random import uniform
 
 import numpy as np
+from cv2.cv2 import imread
 from numpy.linalg import norm
 
 # Матрица эталонных образов
-standard_images_matrix = np.array([[-1, -1, -1],
-                                   [-1, -1, 1],
-                                   [-1, 1, -1],
-                                   [-1, 1, 1],
-                                   [1, -1, -1],
-                                   [1, -1, 1],
-                                   [1, 1, -1],
-                                   [1, 1, 1]])
+standard_images_matrix_1 = np.array([[-1, -1, -1],
+                                     [-1, -1, 1],
+                                     [-1, 1, -1],
+                                     [-1, 1, 1],
+                                     [1, -1, -1],
+                                     [1, -1, 1],
+                                     [1, 1, -1],
+                                     [1, 1, 1]])
 
 # Еще одна матрица
 standard_images_matrix_2 = np.array([[-1, -1, 1, -1, 1, -1, 1, -1, 1],
@@ -32,12 +34,12 @@ class HammingNeuron:
         for i in range(self.k):
             for j in range(self.m):
                 self.weights[i][j] = images_matrix[i][j] / 2
-        # Матрица весов обратных связей
+        # Матрица весов обратных связей (весовых коэффициентов второго слоя)
         eps = uniform(0, 1 / self.k)
         self.eps_matrix = np.zeros((self.k, self.k))
         for i in range(self.k):
             for j in range(self.k):
-                self.eps_matrix[i][j] = 1 if i == j else -eps
+                self.eps_matrix[i][j] = 1 if i == j else -0.1#-eps
         self.e_max = 0.1
 
     # Пороговая функция активации
@@ -59,11 +61,27 @@ class HammingNeuron:
         return self.threshold_function(result)
 
 
+def bmp_to_standard_matrix_row(img):
+    result = np.intc(img.flatten())
+    for i in range(len(result)):
+        result[i] = 1 if (result[i] == 0) else -1
+    return result
+
+
 def main():
+    # Чтение данных
+    k = 10
+    standard_matrix = []
+    for i in range(k):
+        img = imread(os.path.join(os.path.dirname(__file__), '..', 'resources\\images\\0' + str(i) + '.bmp'), 0)
+        standard_matrix.append(bmp_to_standard_matrix_row(img))
+    standard_images_matrix = np.asarray(standard_matrix)
+
     # Обучение
-    neuron = HammingNeuron(standard_images_matrix_2)
+    neuron = HammingNeuron(standard_images_matrix)
     # Использование
-    x = np.array([1, -1, -1, -1, 1, -1, 1, -1, 1])
+    x = bmp_to_standard_matrix_row(
+        imread(os.path.join(os.path.dirname(__file__), '..', 'resources\\images\\test.bmp'), 0))
     y = neuron.feed_forward(x)
     y_next = neuron.recalculate_second_layer(y)
 
