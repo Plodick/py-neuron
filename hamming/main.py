@@ -39,7 +39,7 @@ class HammingNeuron:
         self.eps_matrix = np.zeros((self.k, self.k))
         for i in range(self.k):
             for j in range(self.k):
-                self.eps_matrix[i][j] = 1 if i == j else -0.1#-eps
+                self.eps_matrix[i][j] = 1 if i == j else -eps
         self.e_max = 0.1
 
     # Пороговая функция активации
@@ -70,10 +70,10 @@ def bmp_to_standard_matrix_row(img):
 
 def main():
     # Чтение данных
-    k = 10
+    k = 2
     standard_matrix = []
     for i in range(k):
-        img = imread(os.path.join(os.path.dirname(__file__), '..', 'resources\\images\\0' + str(i) + '.bmp'), 0)
+        img = imread(os.path.join(os.path.dirname(__file__), '..', 'resources\\images\\2' + str(i) + '.bmp'), 0)
         standard_matrix.append(bmp_to_standard_matrix_row(img))
     standard_images_matrix = np.asarray(standard_matrix)
 
@@ -81,7 +81,7 @@ def main():
     neuron = HammingNeuron(standard_images_matrix)
     # Использование
     x = bmp_to_standard_matrix_row(
-        imread(os.path.join(os.path.dirname(__file__), '..', 'resources\\images\\test.bmp'), 0))
+        imread(os.path.join(os.path.dirname(__file__), '..', 'resources\\images\\test2.bmp'), 0))
     y = neuron.feed_forward(x)
     y_next = neuron.recalculate_second_layer(y)
 
