@@ -36,10 +36,10 @@ class HammingNeuron:
                 self.weights[i][j] = images_matrix[i][j] / 2
         # Матрица весов обратных связей (весовых коэффициентов второго слоя)
         eps = uniform(0, 1 / self.k)
-        self.eps_matrix = np.zeros((self.k, self.k))
+        self.e_layer = np.zeros((self.k, self.k))
         for i in range(self.k):
             for j in range(self.k):
-                self.eps_matrix[i][j] = 1 if i == j else -eps
+                self.e_layer[i][j] = 1 if i == j else -eps
         self.e_max = 0.1
 
     # Пороговая функция активации
@@ -57,7 +57,7 @@ class HammingNeuron:
         return self.threshold_function(result)
 
     def recalculate_second_layer(self, y):
-        result = np.dot(self.eps_matrix, y)
+        result = np.dot(self.e_layer, y)
         return self.threshold_function(result)
 
 
