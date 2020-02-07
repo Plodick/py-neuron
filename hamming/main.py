@@ -21,7 +21,7 @@ standard_images_matrix_2 = np.array([[-1, -1, 1, -1, 1, -1, 1, -1, 1],
                                      [1, 1, 1, 1, -1, 1, 1, 1, 1]])
 
 
-class HammingNeuron:
+class HammingNetwork:
     def __init__(self, images_matrix):
         # Число образов
         self.k = len(images_matrix)
@@ -52,17 +52,17 @@ class HammingNeuron:
             }[True]
         return x
 
-    def feed_forward(self, x):
-        result = np.dot(self.weights, x) + self.t
+    def calculate_first_layer(self, x):
+        result = self.weights @ x
         return self.threshold_function(result)
 
     def recalculate_second_layer(self, y):
-        result = np.dot(self.e_layer, y)
+        result = self.e_layer @ y
         return self.threshold_function(result)
 
 
-def bmp_to_standard_matrix_row(img):
-    result = np.intc(img.flatten())
+def bmp_to_standard_matrix_row(path):
+    result = np.intc(imread(path, 0).flatten())
     for i in range(len(result)):
         result[i] = 1 if (result[i] == 0) else -1
     return result
@@ -70,19 +70,21 @@ def bmp_to_standard_matrix_row(img):
 
 def main():
     # Чтение данных
-    k = 2
+    k = 10
     standard_matrix = []
     for i in range(k):
-        img = imread(os.path.join(os.path.dirname(__file__), '..', 'resources\\images\\2' + str(i) + '.bmp'), 0)
-        standard_matrix.append(bmp_to_standard_matrix_row(img))
+        img = bmp_to_standard_matrix_row(
+            os.path.join(os.path.dirname(__file__), '..', 'resources\\images\\' + str(i) + '.bmp'))
+        standard_matrix.append(img)
     standard_images_matrix = np.asarray(standard_matrix)
 
     # Обучение
-    neuron = HammingNeuron(standard_images_matrix)
+    neuron = HammingNetwork(standard_images_matrix)
     # Использование
     x = bmp_to_standard_matrix_row(
-        imread(os.path.join(os.path.dirname(__file__), '..', 'resources\\images\\test2.bmp'), 0))
-    y = neuron.feed_forward(x)
+        os.path.join(os.path.dirname(__file__), '..', 'resources\\images\\test.bmp'))
+    # x = np.array([1, -1, -1, -1, 1, -1, 1, -1, 1])
+    y = neuron.calculate_first_layer(x)
     y_next = neuron.recalculate_second_layer(y)
 
     while norm(y_next - y) ** 2 > neuron.e_max:
