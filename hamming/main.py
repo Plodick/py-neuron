@@ -79,17 +79,17 @@ def main():
     standard_images_matrix = np.asarray(standard_matrix)
 
     # Обучение
-    neuron = HammingNetwork(standard_images_matrix)
+    network = HammingNetwork(standard_images_matrix)
     # Использование
     x = bmp_to_standard_matrix_row(
         os.path.join(os.path.dirname(__file__), '..', 'resources\\images\\test.bmp'))
     # x = np.array([1, -1, -1, -1, 1, -1, 1, -1, 1])
-    y = neuron.calculate_first_layer(x)
-    y_next = neuron.recalculate_second_layer(y)
+    y = network.calculate_first_layer(x)
+    y_next = network.recalculate_second_layer(y)
 
-    while norm(y_next - y) ** 2 > neuron.e_max:
+    while norm(y_next - y) ** 2 > network.e_max:
         y = y_next
-        y_next = neuron.recalculate_second_layer(y)
+        y_next = network.recalculate_second_layer(y)
     print(y_next)
 
 
